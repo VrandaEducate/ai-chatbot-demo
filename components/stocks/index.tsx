@@ -1,4 +1,4 @@
 'use client'
 
-export { BotCard, BotMessage, SystemMessage } from './message'
+export {  BotMessage } from './message'
 

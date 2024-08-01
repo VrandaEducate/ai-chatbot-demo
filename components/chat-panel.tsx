@@ -3,12 +3,7 @@ import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import { PromptForm } from '@/components/prompt-form'
 import { ButtonScrollToBottom } from '@/components/button-scroll-to-bottom'
-import { IconShare } from '@/components/ui/icons'
-import { useAIState, useActions, useUIState } from 'ai/rsc'
-import type { AI } from '@/lib/chat/actions'
-import { nanoid } from 'nanoid'
-import { UserMessage } from './stocks/message'
-import {useAssistant} from "ai/react";
+
 
 export interface ChatPanelProps {
   id?: string
@@ -29,7 +24,7 @@ export function ChatPanel({
   isAtBottom,
   scrollToBottom,
     submitMessage,
-    messages
+    messages,
 }: ChatPanelProps) {
   console.log("ChatPanel");
   // const [aiState] = useAIState()

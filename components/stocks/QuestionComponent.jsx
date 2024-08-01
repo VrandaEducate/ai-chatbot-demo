@@ -1,64 +1,26 @@
 import React, { useState } from 'react';
-import { nanoid } from "nanoid";
-import { UserMessage } from "@/components/stocks/message";
-import { useActions, useUIState } from "ai/rsc";
-import { useChat } from "ai/react";
-import {useEnterSubmit} from "@/lib/hooks/use-enter-submit";
 
 const QuestionComponent = ({ MID, question, options, submitMessage, setMessages, handleInputChange, messages, setInput, input , setEdit, setMID, threadId,  setThreadId}) => {
     const [selectedOption, setSelectedOption] = useState('');
     const [isFirstSubmit, setIsFirstSubmit] = useState(true);
-    const { formRef } = useEnterSubmit();
 
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
     };
-    // const uptoThatIndex = () => {
-    //     let index = -1;
-    //     for(let i = 0; i < messages.length; i++){
-    //         if(messages[i].id === MID){
-    //             index = i;
-    //             break;
-    //         }
-    //     }
-    //     if (index !== -1) {
-    //         return messages.slice(0, index);
-    //     }
-    //     return messages;
-    // }
 
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        // setInput(selectedOption);
         console.log(selectedOption);
-        // await submitMessage(e, { data: { edit: "true", messageId: MID } });
-        // submitMessage();
-        //
         setThreadId(threadId);
-        // setInput(selectedOption);
         if (isFirstSubmit) {
-            // Perform task for the first submission
             console.log('First submit action');
-            // setInput(selectedOption);
-           // debugger;
-            setEdit(false);
-          await  submitMessage(e, { data: { edit: "true", messageId: MID } })
+          await  submitMessage(e, { data: { edit: "false" } })
             setIsFirstSubmit(false);
 
         } else {
-            // Perform a different task for subsequent submissions
             console.log('Subsequent submit action');
-            // const filteredMessages = uptoThatIndex();
-            // setMessages(() => {
-            //     return [
-            //         ...filteredMessages
-            //     ];
-            // })
-            // setInput(selectedOption);
-            setEdit(true);
-            setMID(MID);
-            await submitMessage();
+            await  submitMessage(e, { data: { edit: "false", messageId: MID } })
 
         }
     };
@@ -71,7 +33,6 @@ const QuestionComponent = ({ MID, question, options, submitMessage, setMessages,
                 <form className="w-full" onSubmit={(e) =>  {
                     console.log("submit");
                     handleSubmit(e);
-                    // submitMessage(e, { data: { edit: "true", messageId: MID } })
                 }}>
                     {options.map((option, index) => (
                         <div key={index} className="mb-4 flex">
@@ -94,7 +55,7 @@ const QuestionComponent = ({ MID, question, options, submitMessage, setMessages,
                     {options && (
                         <button
                             type="submit"
-                            className="mt-6 px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg shadow-lg hover:bg-gray-200 transition duration-200"
+                            className="mt-6 px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg shadow-lg hover:bg-gray-200 transition duration-200"
                         >
                             Submit
                         </button>

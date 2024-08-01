@@ -11,7 +11,8 @@ import { Message, Session } from '@/lib/types'
 import { usePathname, useRouter } from 'next/navigation'
 import { useScrollAnchor } from '@/lib/hooks/use-scroll-anchor'
 import { toast } from 'sonner'
-import {useAssistant} from "ai/react";
+import {useAssistant} from "sahil_tes00";
+import * as React from "react";
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -21,40 +22,15 @@ export interface ChatProps extends React.ComponentProps<'div'> {
 }
 
 export function Chat({ id, className, missingKeys }: ChatProps) {
-  const router = useRouter()
-  const path = usePathname()
+
   // const [input, setInput] = useState('')
-  const [edit, setEdit] = useState(false);
+  const [edit, setEdit] = useState("false");
   const [threadIdd, setThreadId] = useState(id);
   const [messId, setMID] = useState('');
-  const {messages, submitMessage, input, handleInputChange, setInput, threadId, setMessages} = useAssistant({api: '/api/assistant', threadId: threadIdd, body: {
-    edit: edit,
-      messageId: messId
-    }});
-  // const [messages] = useUIState()
-  // const [aiState] = useAIState()
+  const {messages, submitMessage,  status, input, handleInputChange, setInput, threadId, setMessages} = useAssistant({api: '/api/assistant', threadId: threadIdd});
+
   console.log("chat", messages);
 
-  // const [_, setNewChatId] = useLocalStorage('newChatId', id)
-  //
-  // useEffect(() => {
-  //   // if (session?.user) {
-  //   //   if (!path.includes('chat') && messages.length === 1) {
-  //       window.history.replaceState({}, '', `/chat/${id}`)
-  //     // }
-  //   // }
-  // }, [id, path, messages])
-
-  // useEffect(() => {
-  //   const messagesLength = aiState.messages?.length
-  //   if (messagesLength === 2) {
-  //     router.refresh()
-  //   }
-  // }, [aiState.messages, router])
-
-  // useEffect(() => {
-  //   setNewChatId(id)
-  // })
 
   useEffect(() => {
     missingKeys.map(key => {
@@ -75,7 +51,7 @@ export function Chat({ id, className, missingKeys }: ChatProps) {
         ref={messagesRef}
       >
         {messages.length ? (
-          <ChatList messages={messages} isShared={false} submitMessage={submitMessage} input={input} setInput={setInput} setEdit={setEdit} setMID={setMID} threadId={threadId} handleInputChange={handleInputChange} setThreadId={setThreadId} setMessages={setMessages} />
+          <ChatList messages={messages} isShared={false} status={status} submitMessage={submitMessage} input={input} setInput={setInput} setEdit={setEdit} setMID={setMID} threadId={threadId} handleInputChange={handleInputChange} setThreadId={setThreadId} setMessages={setMessages} />
         ) : (
           <EmptyScreen />
         )}
@@ -89,6 +65,7 @@ export function Chat({ id, className, missingKeys }: ChatProps) {
         scrollToBottom={scrollToBottom}
         submitMessage={submitMessage}
         messages={messages}
+
       />
     </div>
   )
