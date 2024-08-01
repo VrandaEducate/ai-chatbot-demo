@@ -1,0 +1,179 @@
+import { AssistantResponse } from 'ai';
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY || '',
+});
+
+// Allow streaming responses up to 30 seconds
+export const maxDuration = 30;
+
+export async function POST(req: Request) {
+ // const output: any = await req.json();
+ // console.log("output", output);
+    // Parse the request body
+    const input: {
+        threadId: string | null;
+        message: string;
+        messageId: string | undefined;
+        edit: boolean;
+    } = await req.json();
+    console.log("threadIdbefore", input);
+
+
+    let threadId = input.threadId;
+    if (input.edit && input.messageId) {
+        // Fetch all previous messages in the thread up to the provided messageId
+        if (typeof threadId === "string") {
+            const previousMessages = await openai.beta.threads.messages.list(threadId);
+            previousMessages.data = previousMessages.data.reverse();
+            const newMessageArray = [];
+
+            // Append all previous messages to the new thread up to the messageId
+            for (const msg of previousMessages.data) {
+                if (msg.id === input.messageId) {
+                    break;
+                }
+                newMessageArray.push({
+                    role: msg.role,
+                    content: msg.content[0].text['value'],
+                });
+            }
+
+
+
+            // Create a new thread
+            threadId = (await openai.beta.threads.create({messages: newMessageArray})).id;
+
+            console.log('newMessageArray', newMessageArray);
+            // console.log('previousMessages', previousMessages);
+
+        }
+        if (typeof threadId === "string") {
+            // const newTreadMessage = await openai.beta.threads.messages.list(threadId);
+            // for (const msg of newTreadMessage.data) {
+            //     console.log(msg.content[0].text['value']);
+            // }
+            // Add a message to the thread
+            const createdMessage = await openai.beta.threads.messages.create(
+                threadId,
+                {
+                    role: 'user',
+                    content: input.message
+                },
+                {signal: req.signal},
+            );
+            return AssistantResponse(
+                {threadId, messageId: createdMessage.id},
+                async ({forwardStream, sendDataMessage}) => {
+                    // Run the assistant on the thread
+                    if (typeof threadId === "string") {
+                        const runStream = openai.beta.threads.runs.stream(
+                            threadId,
+                            {
+                                assistant_id:
+                                    process.env.ASSISTANT_ID ??
+                                    (() => {
+                                        throw new Error('ASSISTANT_ID is not set');
+                                    })(),
+                            },
+                            {signal: req.signal},
+                        );
+
+                        console.log('createdMessage in if', createdMessage, 'runStream', runStream);
+
+                        // forward run status would stream message deltas
+                        let runResult = await forwardStream(runStream);
+
+                        // status can be: queued, in_progress, requires_action, cancelling, cancelled, failed, completed, or expired
+                        while (
+                            runResult?.status === 'requires_action' &&
+                            runResult.required_action?.type === 'submit_tool_outputs'
+                            ) {
+                            const tool_outputs =
+                                runResult.required_action.submit_tool_outputs.tool_calls.map(
+                                    (toolCall: any) => {
+                                        const parameters = JSON.parse(toolCall.function.arguments);
+
+                                        switch (toolCall.function.name) {
+                                            // configure your tool calls here
+
+                                            default:
+                                                throw new Error(
+                                                    `Unknown tool call function: ${toolCall.function.name}`,
+                                                );
+                                        }
+                                    },
+                                );
+
+                            runResult = await forwardStream(
+                                openai.beta.threads.runs.submitToolOutputsStream(
+                                    threadId,
+                                    runResult.id,
+                                    {tool_outputs},
+                                ),
+                            );
+                        }
+                    }
+                })
+        }
+    }else {
+        // Create a thread if needed
+        const threadId = input.threadId ?? (await openai.beta.threads.create({})).id;
+        console.log("threadId", threadId);
+
+
+        // Add a message to the thread
+        const createdMessage = await openai.beta.threads.messages.create(threadId, {
+            role: 'user',
+            content: input.message,
+        });
+
+        return AssistantResponse(
+            {threadId, messageId: createdMessage.id},
+            async ({forwardStream, sendDataMessage}) => {
+                // Run the assistant on the thread
+                const runStream = openai.beta.threads.runs.stream(threadId, {
+                    assistant_id:
+                        process.env.ASSISTANT_ID ??
+                        (() => {
+                            throw new Error('ASSISTANT_ID is not set');
+                        })(),
+                });
+
+                // forward run status would stream message deltas
+                let runResult = await forwardStream(runStream);
+
+                // status can be: queued, in_progress, requires_action, cancelling, cancelled, failed, completed, or expired
+                while (
+                    runResult?.status === 'requires_action' &&
+                    runResult.required_action?.type === 'submit_tool_outputs'
+                    ) {
+                    const tool_outputs =
+                        runResult.required_action.submit_tool_outputs.tool_calls.map(
+                            (toolCall: any) => {
+                                const parameters = JSON.parse(toolCall.function.arguments);
+
+                                switch (toolCall.function.name) {
+                                    // configure your tool calls here
+
+                                    default:
+                                        throw new Error(
+                                            `Unknown tool call function: ${toolCall.function.name}`,
+                                        );
+                                }
+                            },
+                        );
+
+                    runResult = await forwardStream(
+                        openai.beta.threads.runs.submitToolOutputsStream(
+                            threadId,
+                            runResult.id,
+                            {tool_outputs},
+                        ),
+                    );
+                }
+            },
+        );
+    }
+}
