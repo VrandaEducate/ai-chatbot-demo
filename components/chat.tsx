@@ -8,7 +8,7 @@ import { useLocalStorage } from '@/lib/hooks/use-local-storage'
 import { useEffect, useState } from 'react'
 // import { useUIState, useAIState } from 'ai/rsc'
 import { Message, Session } from '@/lib/types'
-import { usePathname, useRouter } from 'next/navigation'
+// import { usePathname, useRouter } from 'next/navigation'
 import { useScrollAnchor } from '@/lib/hooks/use-scroll-anchor'
 import { toast } from 'sonner'
 import {useAssistant} from "sahil_tes00";
@@ -23,13 +23,48 @@ export interface ChatProps extends React.ComponentProps<'div'> {
 
 export function Chat({ id, className, missingKeys }: ChatProps) {
 
-  // const [input, setInput] = useState('')
   const [edit, setEdit] = useState("false");
-  const [threadIdd, setThreadId] = useState(id);
+  const [threadIdd, setThreadId] = useState(localStorage.getItem('threadId') || id);
+  console.log("Sendd", threadIdd);
   const [messId, setMID] = useState('');
-  const {messages, submitMessage,  status, input, handleInputChange, setInput, threadId, setMessages} = useAssistant({api: '/api/assistant', threadId: threadIdd});
+  const {messages, submitMessage,  status, input, handleInputChange, setInput, threadId, setMessages} = useAssistant({api: '/api/assistant', threadId: localStorage.getItem('threadId') || threadIdd});
 
-  console.log("chat", messages);
+  console.log("return ThreadIdd", threadId);
+  if(!localStorage.getItem('threadId') || (localStorage.getItem('isEdit') === "true" && threadIdd !== threadId)){
+    localStorage.setItem('isEdit', "false");
+   threadId && localStorage.setItem('threadId', threadId);
+  }
+
+  const fetchMessages = async (receivedThreadId: any) => {
+    const res = await fetch('/api/messagesThread', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        threadId: receivedThreadId,
+      }),
+    });
+    const data = await res.json();
+    // console.log("dataReq", data);
+    if(data.success){
+      setMessages([]);
+      for (let i = data.threadMessages.length - 1; i >= 0; i--) {
+        const message = data.threadMessages[i];
+        setMessages((prev: any) => [...prev, {
+          id: message.id,
+          content: message.content[0].text.value,
+          role: message.role,
+        }]);
+      }
+    }
+  }
+  useEffect(() => {
+    console.log("ok useEffect");
+    // if(localStorage.getItem('threadId')){
+      fetchMessages( localStorage.getItem('threadId'));
+    // }
+  }, []);
 
 
   useEffect(() => {
@@ -38,8 +73,10 @@ export function Chat({ id, className, missingKeys }: ChatProps) {
     })
   }, [missingKeys])
 
+
   const { messagesRef, scrollRef, visibilityRef, isAtBottom, scrollToBottom } =
     useScrollAnchor()
+
 
   return (
     <div
@@ -65,7 +102,7 @@ export function Chat({ id, className, missingKeys }: ChatProps) {
         scrollToBottom={scrollToBottom}
         submitMessage={submitMessage}
         messages={messages}
-
+        setThreadId={setThreadId}
       />
     </div>
   )

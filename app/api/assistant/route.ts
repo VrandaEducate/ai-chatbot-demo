@@ -23,7 +23,7 @@ export async function POST(req: Request) {
         };
 
         const addMessageToThread = async (threadId: string, content: string) => {
-            return await openai.beta.threads.messages.create(threadId, {
+            return openai.beta.threads.messages.create(threadId, {
                 role: 'user',
                 content,
             });
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
                         }
                     },
                 );
-
+                console.log("forwardStreamThread", threadId);
                 runResult = await forwardStream(
                     openai.beta.threads.runs.submitToolOutputsStream(threadId, runResult.id, { tool_outputs })
                 );
@@ -83,6 +83,7 @@ export async function POST(req: Request) {
         return AssistantResponse(
             { threadId, messageId: createdMessage.id },
             async ({ forwardStream }) => {
+                console.log("runStream", threadId);
                 const runStream = openai.beta.threads.runs.stream(threadId, {
                     assistant_id: process.env.ASSISTANT_ID || (() => {
                         throw new Error('ASSISTANT_ID is not set');
@@ -96,6 +97,7 @@ export async function POST(req: Request) {
         );
     } catch (error) {
         console.error("Error in POST handler:", error);
+        // @ts-ignore
         return new Response(JSON.stringify({ error: error.message }), { status: 500 });
     }
 }

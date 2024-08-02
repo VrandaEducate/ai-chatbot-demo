@@ -12,16 +12,16 @@ const QuestionComponent = ({ MID, question, options, submitMessage, setMessages,
     const handleSubmit = async (e) => {
         e.preventDefault()
         console.log(selectedOption);
-        setThreadId(threadId);
+        // setThreadId(localStorage.getItem('threadId'));
         if (isFirstSubmit) {
             console.log('First submit action');
-          await  submitMessage(e, { data: { edit: "false" } })
+            await  submitMessage(e, { data: { edit: "false" } })
             setIsFirstSubmit(false);
-
         } else {
             console.log('Subsequent submit action');
-            await  submitMessage(e, { data: { edit: "false", messageId: MID } })
-
+            // debugger;
+            localStorage.setItem('isEdit', "true");
+            await  submitMessage(e, { data: { edit: "true", messageId: MID } })
         }
     };
 

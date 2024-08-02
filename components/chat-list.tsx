@@ -19,8 +19,7 @@ export interface ChatList {
 }
 
 export function ChatList({ messages, submitMessage, status, handleInputChange, input, setInput, setEdit , setMID, threadId, setThreadId, setMessages}: ChatList) {
-  console.log("ChatList", messages);
-
+  // console.log("ChatList", messages);
   if (!messages.length) {
     return null
   }
@@ -29,7 +28,7 @@ export function ChatList({ messages, submitMessage, status, handleInputChange, i
     <div className="relative mx-auto max-w-2xl px-4">
 
       {messages.map((message: any, index: any) => (
-        <div  key={message.id}>
+        <div  key={message.id + index}>
           { message.role === 'user' ? <UserMessage><div  id={`message-${message.id}`}>{message.content}</div></UserMessage> : <BotMessage handleInputChange={handleInputChange} submitMessage={submitMessage} content={message.content} MID={message.id} input={input} setInput={setInput} setEdit={setEdit} setMID={setMID} threadId={threadId} setThreadId={setThreadId} messages={messages} setMessages={setMessages} />}
           {index < messages.length - 1 && <Separator className="my-4" />}
         </div>

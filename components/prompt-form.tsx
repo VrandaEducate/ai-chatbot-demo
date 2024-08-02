@@ -15,11 +15,13 @@ import { useRouter } from 'next/navigation'
 export function PromptForm({
                              input,
                              setInput,
-                            submitMessage
+                            submitMessage,
+    setThreadId
                            }: {
   input: string
   setInput: any
     submitMessage: any
+    setThreadId: any
 }) {
     console.log("Prompt");
   const router = useRouter()
@@ -46,6 +48,7 @@ export function PromptForm({
             const value = input.trim()
               console.log(input);
             setInput(value);
+              // localStorage.getItem('threadId') &&  setThreadId(localStorage.getItem('threadId'));
             submitMessage();
           }}
       >

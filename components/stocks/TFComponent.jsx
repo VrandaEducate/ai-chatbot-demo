@@ -20,15 +20,15 @@ const TFComponent = ({ MID, question, options, submitMessage, setMessages, handl
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(selectedOption);
-        setThreadId(threadId);
+        // console.log(selectedOption);
+        // setThreadId(localStorage.getItem('threadId'));
         if (isFirstSubmit) {
             console.log('First submit action');
             await submitMessage(e, { data: { edit: "false" } });
             setIsFirstSubmit(false);
         } else {
             console.log('Subsequent submit action');
-            await submitMessage(e, { data: { edit: "false", messageId: MID } });
+            await submitMessage(e, { data: { edit: "true", messageId: MID } });
         }
     };
 

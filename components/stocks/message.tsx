@@ -53,7 +53,7 @@ export function BotMessage({
     handleInputChange: any,
     setMessages: any
 }) {
-    console.log(content);
+    // console.log(content);
     let jsonObject: any;
         if(content.trim().startsWith('{')){
             if (content.trim().endsWith('}')) {

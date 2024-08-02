@@ -1,4 +1,3 @@
-import { nanoid } from '@/lib/utils'
 import { Chat } from '@/components/chat'
 import { getMissingKeys } from '@/app/actions'
 import OpenAI from "openai";

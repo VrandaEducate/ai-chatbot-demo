@@ -14,6 +14,7 @@ export interface ChatPanelProps {
   scrollToBottom: () => void
   submitMessage: any
   messages: any
+  setThreadId: any
 }
 
 export function ChatPanel({
@@ -25,6 +26,7 @@ export function ChatPanel({
   scrollToBottom,
     submitMessage,
     messages,
+    setThreadId,
 }: ChatPanelProps) {
   console.log("ChatPanel");
   // const [aiState] = useAIState()
@@ -100,7 +102,7 @@ export function ChatPanel({
         </div>
 
         <div className="space-y-4 border-t bg-background px-4 py-2 shadow-lg sm:rounded-t-xl sm:border md:py-4">
-          <PromptForm input={input} setInput={setInput} submitMessage={submitMessage} />
+          <PromptForm input={input} setInput={setInput} submitMessage={submitMessage} setThreadId={setThreadId} />
         </div>
       </div>
     </div>
