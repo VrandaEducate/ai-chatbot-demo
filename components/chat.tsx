@@ -25,11 +25,11 @@ export function Chat({ id, className, missingKeys }: ChatProps) {
 
   const [edit, setEdit] = useState("false");
   const [threadIdd, setThreadId] = useState(localStorage.getItem('threadId') || id);
-  console.log("Sendd", threadIdd);
+  // console.log("Sendd", threadIdd);
   const [messId, setMID] = useState('');
   const {messages, submitMessage,  status, input, handleInputChange, setInput, threadId, setMessages} = useAssistant({api: '/api/assistant', threadId: localStorage.getItem('threadId') || threadIdd});
 
-  console.log("return ThreadIdd", threadId);
+  // console.log("return ThreadIdd", threadId);
   if(!localStorage.getItem('threadId') || (localStorage.getItem('isEdit') === "true" && threadIdd !== threadId)){
     localStorage.setItem('isEdit', "false");
    threadId && localStorage.setItem('threadId', threadId);

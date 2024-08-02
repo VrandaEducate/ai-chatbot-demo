@@ -28,6 +28,7 @@ const TFComponent = ({ MID, question, options, submitMessage, setMessages, handl
             setIsFirstSubmit(false);
         } else {
             console.log('Subsequent submit action');
+            localStorage.setItem('isEdit', "true");
             await submitMessage(e, { data: { edit: "true", messageId: MID } });
         }
     };

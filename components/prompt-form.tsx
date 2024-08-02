@@ -46,7 +46,7 @@ export function PromptForm({
             }
 
             const value = input.trim()
-              console.log(input);
+              // console.log(input);
             setInput(value);
               // localStorage.getItem('threadId') &&  setThreadId(localStorage.getItem('threadId'));
             submitMessage();
