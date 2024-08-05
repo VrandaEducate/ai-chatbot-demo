@@ -3,6 +3,8 @@ import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import { PromptForm } from '@/components/prompt-form'
 import { ButtonScrollToBottom } from '@/components/button-scroll-to-bottom'
+import {UserMessage} from "@/components/stocks/message";
+import {nanoid} from "nanoid";
 
 
 export interface ChatPanelProps {
@@ -15,6 +17,8 @@ export interface ChatPanelProps {
   submitMessage: any
   messages: any
   setThreadId: any
+  handleInputChange: any
+  setMessages: any
 }
 
 export function ChatPanel({
@@ -27,6 +31,8 @@ export function ChatPanel({
     submitMessage,
     messages,
     setThreadId,
+                            handleInputChange,
+                            setMessages
 }: ChatPanelProps) {
   console.log("ChatPanel");
   // const [aiState] = useAIState()
@@ -37,24 +43,24 @@ export function ChatPanel({
 
   const exampleMessages = [
     {
-      heading: 'What are the',
-      subheading: 'trending memecoins today?',
-      message: `What are the trending memecoins today?`
+      heading: 'What is trending',
+      subheading: 'right now in IT?',
+      message: `What is trending right now in IT?`
     },
     {
-      heading: 'What is the price of',
-      subheading: '$DOGE right now?',
-      message: 'What is the price of $DOGE right now?'
+      heading: 'Tell me the recipe of',
+      subheading: 'Maggie?',
+      message: 'Tell me the recipe of Maggie dont ask any further question?'
     },
     {
-      heading: 'I would like to buy',
-      subheading: '42 $DOGE',
-      message: `I would like to buy 42 $DOGE`
+      heading: 'I would like to watch',
+      subheading: 'Movie',
+      message: `Recommend a movie to watch`
     },
     {
-      heading: 'What are some',
-      subheading: `recent events about $DOGE?`,
-      message: `What are some recent events about $DOGE?`
+      heading: 'Want to know about',
+      subheading: `Technology`,
+      message: `Want to know about Technology`
     }
   ]
 
@@ -74,14 +80,20 @@ export function ChatPanel({
                 className={`cursor-pointer rounded-lg border bg-white p-4 hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900 ${
                   index > 1 && 'hidden md:block'
                 }`}
-                onClick={async () => {
-                  // setMessages(currentMessages => [
-                  //   ...currentMessages,
-                  //   {
-                  //     id: nanoid(),
-                  //     display: <UserMessage>{example.message}</UserMessage>
-                  //   }
-                  // ])
+                onClick={async (e) => {
+                  console.log("clickeddd", e)
+                  e.preventDefault()
+                  // setInput(example.message);
+                  // e.target.innerText = example.message;
+                  const newEvent = {
+                    ...e,
+                    target: {
+                      ...e.target,
+                      value: example.message,
+                    },
+                  };
+                  handleInputChange(newEvent);
+                  await  submitMessage(e, { data: { edit: "false" } })
 
                   // const responseMessage = await submitUserMessage(
                   //   example.message
