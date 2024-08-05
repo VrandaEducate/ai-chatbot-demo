@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
@@ -10,13 +10,19 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 
-const TFComponent = ({ MID, question, options, submitMessage, setMessages, handleInputChange, messages, setInput, input, setEdit, setMID, threadId, setThreadId }) => {
+const TFComponent = ({ MID, question, options, submitMessage, setMessages, handleInputChange, messages, setInput, input, setEdit, setMID, threadId, setThreadId, currInd }) => {
     const [selectedOption, setSelectedOption] = useState('');
     const [isFirstSubmit, setIsFirstSubmit] = useState(true);
 
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
     };
+    useEffect(() => {
+        if (currInd + 1 < messages.length) {
+            setSelectedOption(messages[currInd + 1].content);
+            setIsFirstSubmit(false);
+        }
+    }, [currInd, messages]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

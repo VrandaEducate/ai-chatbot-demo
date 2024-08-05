@@ -29,7 +29,7 @@ export function ChatList({ messages, submitMessage, status, handleInputChange, i
 
       {messages.map((message: any, index: any) => (
         <div  key={message.id + index}>
-          { message.role === 'user' ? <UserMessage><div  id={`message-${message.id}`}>{message.content}</div></UserMessage> : <BotMessage handleInputChange={handleInputChange} submitMessage={submitMessage} content={message.content} MID={message.id} input={input} setInput={setInput} setEdit={setEdit} setMID={setMID} threadId={threadId} setThreadId={setThreadId} messages={messages} setMessages={setMessages} />}
+          { message.role === 'user' ? <UserMessage><div  id={`message-${message.id}`}>{message.content}</div></UserMessage> : <BotMessage handleInputChange={handleInputChange} submitMessage={submitMessage} content={message.content} MID={message.id} input={input} setInput={setInput} setEdit={setEdit} setMID={setMID} threadId={threadId} setThreadId={setThreadId} messages={messages} setMessages={setMessages} currInd={index} />}
           {index < messages.length - 1 && <Separator className="my-4" />}
         </div>
       ))}

@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
-const QuestionComponent = ({ MID, question, options, submitMessage, setMessages, handleInputChange, messages, setInput, input , setEdit, setMID, threadId,  setThreadId}) => {
+const QuestionComponent = ({ MID, question, options, submitMessage, setMessages, handleInputChange, messages, setInput, input , setEdit, setMID, threadId,  setThreadId, currInd}) => {
     const [selectedOption, setSelectedOption] = useState('');
     const [isFirstSubmit, setIsFirstSubmit] = useState(true);
 
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
     };
+
+    useEffect(() => {
+        if (currInd + 1 < messages.length) {
+            setSelectedOption(messages[currInd + 1].content);
+            setIsFirstSubmit(false);
+        }
+    }, [currInd, messages]);
 
 
     const handleSubmit = async (e) => {
@@ -21,7 +28,7 @@ const QuestionComponent = ({ MID, question, options, submitMessage, setMessages,
             console.log('Subsequent submit action');
             // debugger;
             localStorage.setItem('isEdit', "true");
-            await  submitMessage(e, { data: { edit: "true", messageId: MID } })
+            await  submitMessage(e, { data: { edit: "true", messageId: MID }})
         }
     };
 

@@ -37,7 +37,8 @@ export function BotMessage({
     setThreadId,
     messages,
     setMessages,
-                               handleInputChange
+                               handleInputChange,
+                               currInd
                            }: {
     MID?: any
     content: string
@@ -51,7 +52,8 @@ export function BotMessage({
     setThreadId: any,
     messages: any,
     handleInputChange: any,
-    setMessages: any
+    setMessages: any,
+    currInd: any
 }) {
     // console.log(content);
     let jsonObject: any;
@@ -82,13 +84,13 @@ export function BotMessage({
 
                         jsonObject && jsonObject.question_type === "MCQ" && jsonObject.output_type === "json" && (
                             // @ts-ignore
-                            <QuestionComponent handleInputChange={handleInputChange} question={jsonObject.questions} options={jsonObject.options} MID={MID} submitMessage={submitMessage} input={input} setInput={setInput} setEdit={setEdit} setMID={setMID} threadId={threadId} setThreadId={setThreadId} messages={messages} setMessages={setMessages} />
+                            <QuestionComponent handleInputChange={handleInputChange} question={jsonObject.questions} options={jsonObject.options} MID={MID} submitMessage={submitMessage} input={input} setInput={setInput} setEdit={setEdit} setMID={setMID} threadId={threadId} setThreadId={setThreadId} messages={messages} setMessages={setMessages} currInd={currInd} />
                         )
                     }
                     {
                         jsonObject && jsonObject.question_type === "true or false" && jsonObject.output_type === "json" && (
                             // @ts-ignore
-                            <TFComponent handleInputChange={handleInputChange} question={jsonObject.questions} options={jsonObject.options} MID={MID} submitMessage={submitMessage} input={input} setInput={setInput} setEdit={setEdit} setMID={setMID} threadId={threadId} setThreadId={setThreadId} messages={messages} setMessages={setMessages} />
+                            <TFComponent handleInputChange={handleInputChange} question={jsonObject.questions} options={jsonObject.options} MID={MID} submitMessage={submitMessage} input={input} setInput={setInput} setEdit={setEdit} setMID={setMID} threadId={threadId} setThreadId={setThreadId} messages={messages} setMessages={setMessages} currInd={currInd} />
                         )
                     }
                     {

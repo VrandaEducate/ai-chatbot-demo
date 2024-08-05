@@ -30,10 +30,10 @@ export function Chat({ id, className, missingKeys }: ChatProps) {
   const [messId, setMID] = useState('');
   const {messages, submitMessage,  status, input, handleInputChange, setInput, threadId, setMessages} = useAssistant({api: '/api/assistant', threadId: localStorage.getItem('threadId') || threadIdd});
 
-  // console.log("return ThreadIdd", threadId);
+  console.log("return ThreadIdd", threadId);
   if(!localStorage.getItem('threadId') || (localStorage.getItem('isEdit') === "true" && localStorage.getItem('threadId') !== threadId)){
-    // console.log("runn", threadId, threadIdd);
-    localStorage.setItem('isEdit', "false");
+    console.log("runn", threadId, threadIdd);
+    threadId &&  localStorage.setItem('isEdit', "false");
     // debugger;
    threadId && localStorage.setItem('threadId', threadId);
   }
