@@ -46,7 +46,7 @@ export async function POST(req: Request) {
                         }
                     },
                 );
-                console.log("forwardStreamThread", threadId);
+                // console.log("forwardStreamThread", threadId);
                 runResult = await forwardStream(
                     openai.beta.threads.runs.submitToolOutputsStream(threadId, runResult.id, { tool_outputs })
                 );
@@ -69,14 +69,14 @@ export async function POST(req: Request) {
             }
 
             threadId = await createThread(newMessageArray);
-            console.log('newMessageArray', newMessageArray);
+            // console.log('newMessageArray', newMessageArray);
         }
 
         if (!threadId) {
             threadId = await createThread();
         }
 
-        console.log("threadId", threadId);
+        // console.log("threadId", threadId);
 
         const createdMessage = await addMessageToThread(threadId, input.message);
 

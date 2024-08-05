@@ -25,13 +25,16 @@ export function Chat({ id, className, missingKeys }: ChatProps) {
 
   const [edit, setEdit] = useState("false");
   const [threadIdd, setThreadId] = useState(localStorage.getItem('threadId') || id);
-  // console.log("Sendd", threadIdd);
+  console.log("Sendd if local", localStorage.getItem('threadId'));
+  console.log("send if threadIdd", threadIdd);
   const [messId, setMID] = useState('');
   const {messages, submitMessage,  status, input, handleInputChange, setInput, threadId, setMessages} = useAssistant({api: '/api/assistant', threadId: localStorage.getItem('threadId') || threadIdd});
 
   // console.log("return ThreadIdd", threadId);
-  if(!localStorage.getItem('threadId') || (localStorage.getItem('isEdit') === "true" && threadIdd !== threadId)){
+  if(!localStorage.getItem('threadId') || (localStorage.getItem('isEdit') === "true" && localStorage.getItem('threadId') !== threadId)){
+    // console.log("runn", threadId, threadIdd);
     localStorage.setItem('isEdit', "false");
+    // debugger;
    threadId && localStorage.setItem('threadId', threadId);
   }
 
@@ -49,6 +52,7 @@ export function Chat({ id, className, missingKeys }: ChatProps) {
     // console.log("dataReq", data);
     if(data.success){
       setMessages([]);
+      console.log("threadMessages", data.threadMessages);
       for (let i = data.threadMessages.length - 1; i >= 0; i--) {
         const message = data.threadMessages[i];
         setMessages((prev: any) => [...prev, {

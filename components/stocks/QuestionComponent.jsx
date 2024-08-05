@@ -11,9 +11,9 @@ const QuestionComponent = ({ MID, question, options, submitMessage, setMessages,
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        console.log(selectedOption);
+        // console.log(selectedOption);
         // setThreadId(localStorage.getItem('threadId'));
-        if (isFirstSubmit) {
+        if(isFirstSubmit){
             console.log('First submit action');
             await  submitMessage(e, { data: { edit: "false" } })
             setIsFirstSubmit(false);
